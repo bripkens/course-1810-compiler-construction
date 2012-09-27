@@ -1,12 +1,13 @@
-SCANNER_TAGET_FILE=scanner
+TAGET_FILE=scanner
 CC=gcc
 
 build:
 	lex scanner.l
-	$(CC) lex.yy.c -o $(SCANNER_TAGET_FILE) -ll
+	yacc -d parser.y
+	$(CC) lex.yy.c y.tab.c -o $(TAGET_FILE)
 
 run: build
-	./scanner
+	./$(TAGET_FILE)
 
 clean:
-	rm -f $(SCANNER_TAGET_FILE) *.c
+	rm -f $(TAGET_FILE) *.c *.h
