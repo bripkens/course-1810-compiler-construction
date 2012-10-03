@@ -10,15 +10,28 @@ whitespace                      [ \t\n]+
 
 %%
 
-{sign}?{digits}                 yylval = atoi(yytext); return INTEGER;
+{sign}?{digits}                 yylval.intval = atoi(yytext); return INTEGER;
 
 {sign}?{digits}"."{digits}?(E{sign}?{digits})? {
-  yylval = atof(yytext);
+  yylval.floatval = atof(yytext);
   return FLOAT;
 }
 
-[+\-*/();]                       { printf("Operator: %s\n", yytext); return *yytext; }
+\"[^"]*\"                       {
+  yylval.stringval = (char *)malloc(yyleng+1);
+  strcpy(yylval.stringval, yytext);
+  return LIT_STRING;
+}
 
-{whitespace}                    /* ignore whitespace */;
+picture                         return DEC_PICTURE;
+start                           return DEC_START;
+end                             return DEC_END;
+var                             return VAR;
+
+[a-zA-Z][a-zA-z0-9]*            {
+  yylval.stringval = (char *)malloc(yyleng+1);
+  strcpy(yylval.stringval, yytext);
+  return ID;
+}
 
 %%
